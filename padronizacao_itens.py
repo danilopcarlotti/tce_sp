@@ -27,19 +27,6 @@ class padronizacao_itens():
 				self.dicionario_itens[classe_item] = [desc_item]
 		pickle.dump(self.dicionario_itens, open("dicionario_classe_itens.pickle", "wb" ) )
 
-	def dicionario_desc_itens_diff(self, dicionario_itens):
-		dicionario_itens_diff = {}
-		for k in dicionario_itens:
-			encontrei_representante = False
-			for k_rep in dicionario_itens_diff:
-				if self.ratio_strings(k, k_rep) >= 0.5:
-					dicionario_itens_diff[k_rep].append(k)
-					encontrei_representante = True
-					break
-			if not encontrei_representante:
-				dicionario_itens_diff[k] = []
-		pickle.dump(dicionario_itens_diff, open('dicionario_itens_diff.pickle','wb'))
-
 	def dicionario_itens_criar(self, arq_desc_itens):
 		df = pd.read_csv(arq_desc_itens, error_bad_lines=False)
 		for index_, row in df.iterrows():
@@ -73,7 +60,8 @@ class padronizacao_itens():
 def main():
 	p = padronizacao_itens()
 	# dic_classes = pickle.load(open('/home/danilo/Documents/tce_sp/dicionario_classe_itens.pickle','rb'))
-	dic_grupos = pickle.load(open('/home/danilo/Documents/tce_sp/dicionario_grupos_itens.pickle','rb'))
+	# dic_grupos = pickle.load(open('/home/danilo/Documents/tce_sp/dicionario_grupos_itens.pickle','rb'))
+	dic_itens = pickle.load(open('/home/danilo/Documents/tce_sp/dicionario_itens.pickle','rb'))
 	
 	# CLASSIFICADORES E CLASSIFICAÇÃO
 	# classificador = pickle.load(open('/home/danilo/Documents/tce_sp/classificador_classes_itensX.pickle','rb'))
@@ -99,21 +87,20 @@ def main():
 		maior_semelhanca = 0
 		item_normalizado = ''
 		if nCaracteres:
-			for k,v in dicionarioComparacao.items():
-				for item in v:
-					ratio_s = p.ratio_strings(STRING_ANALISADA[:nCaracteres],item[:nCaracteres])
-					if ratio_s > maior_semelhanca:
-						maior_semelhanca = ratio_s
-						item_normalizado = item
+			for item,v in dicionarioComparacao.items():
+				ratio_s = p.ratio_strings(STRING_ANALISADA[:nCaracteres],item[:nCaracteres])
+				if ratio_s > maior_semelhanca:
+					maior_semelhanca = ratio_s
+					item_normalizado = item
 			if maior_semelhanca > 0.8:
-				return ([maior_semelhanca, item_normalizado])		
+				return ([maior_semelhanca, item_normalizado])
 			else:
 				return encontra_string_semelhante(dicionarioComparacao, stringAnalisada, nCaracteres - 5)
 		else:
 			return 'Não encontrado'
 
 	STRING_ANALISADA = 'PALHA AÇO MÉDIA N. 1 EMBALAGEM PLÁSTICA COM 25GR.'
-	print(encontra_string_semelhante(dic_grupos, STRING_ANALISADA, 20))
+	print(encontra_string_semelhante(dic_itens, STRING_ANALISADA, 20))
 
 	# CRIAR DICIONÁRIO DE ITENS
 	# p.dicionario_classes_itens_criar('/home/danilo/Downloads/BASE 2009 - 2017 SEM QTDE FORNECEDORES PARTICIPANTES.csv')

@@ -71,5 +71,5 @@ if __name__ == '__main__':
 	# for e, class_e in examples:
 	# 	print(e,sck.predict_mNB([e]),(sck.predict_mNB([e]) == class_e))
 	examples2 = ['bbb','ss s','bb bb bbb','s s', 'a a a s']
-	print(sck.predict_mNB(examples2, as_dict=True))
-	print(sck.validate_score(cv=8))
+	print(sck.predict_mNB(examples2))
+	# print(sck.validate_score(cv=8))
